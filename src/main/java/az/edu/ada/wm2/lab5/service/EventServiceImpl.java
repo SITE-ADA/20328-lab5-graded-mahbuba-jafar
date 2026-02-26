@@ -3,7 +3,7 @@ package az.edu.ada.wm2.lab5.service;
 import az.edu.ada.wm2.lab5.model.Event;
 import az.edu.ada.wm2.lab5.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+//import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,7 +13,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
-@Repository
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
