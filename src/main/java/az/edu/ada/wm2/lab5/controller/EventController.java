@@ -96,6 +96,85 @@ public class EventController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+
+
+    }
+
+    @GetMapping("/filter/date")
+    public ResponseEntity<List<Event>> filterByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
+
+        try {
+            if (start == null || end == null || start.isAfter(end)) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            List<Event> events = eventService.getEventsByDateRange(start, end);
+            return ResponseEntity.ok(events);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/filter/price")
+    public ResponseEntity<List<Event>> filterByPriceRange(
+            @RequestParam BigDecimal min,
+            @RequestParam BigDecimal max) {
+
+        try {
+            if (min == null || max == null || min.compareTo(max) > 0) {
+                return ResponseEntity.badRequest().build();
+            }
+            List<Event> events = eventService.getEventsByPriceRange(min, max);
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/filter/tag")
+    public ResponseEntity<List<Event>> filterByTag(@RequestParam String tag) {
+
+        try {
+            List<Event> events = eventService.getEventsByTag(tag);
+            return ResponseEntity.ok(events);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/upcoming")
+    public ResponseEntity<List<Event>> getUpcomingEvents() {
+
+        try {
+            List<Event> events = eventService.getUpcomingEvents();
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<Event> updateEventPrice(
+            @PathVariable UUID id,
+            @RequestParam BigDecimal price) {
+
+        try {
+            if (id == null || price == null) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            Event updatedEvent = eventService.updateEventPrice(id, price);
+            return ResponseEntity.ok(updatedEvent);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
 }
