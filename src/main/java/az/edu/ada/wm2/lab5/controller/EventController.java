@@ -127,12 +127,22 @@ public class EventController {
             if (min == null || max == null || min.compareTo(max) > 0) {
                 return ResponseEntity.badRequest().build();
             }
-
             List<Event> events = eventService.getEventsByPriceRange(min, max);
+            return ResponseEntity.ok(events);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/filter/tag")
+    public ResponseEntity<List<Event>> filterByTag(@RequestParam String tag) {
+
+        try {
+            List<Event> events = eventService.getEventsByTag(tag);
             return ResponseEntity.ok(events);
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
