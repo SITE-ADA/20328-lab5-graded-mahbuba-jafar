@@ -118,4 +118,22 @@ public class EventController {
         }
     }
 
+    @GetMapping("/filter/price")
+    public ResponseEntity<List<Event>> filterByPriceRange(
+            @RequestParam BigDecimal min,
+            @RequestParam BigDecimal max) {
+
+        try {
+            if (min == null || max == null || min.compareTo(max) > 0) {
+                return ResponseEntity.badRequest().build();
+            }
+
+            List<Event> events = eventService.getEventsByPriceRange(min, max);
+            return ResponseEntity.ok(events);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
 }
